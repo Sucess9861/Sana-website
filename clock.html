@@ -182,6 +182,12 @@
 			color: var(--accent-blue);
 		}
 
+		.offset-label {
+			display: inline-block;
+			color: var(--muted);
+			margin-right: 8px;
+		}
+
 		/* Main clock section */
 		.main-clock-section {
 			background: linear-gradient(135deg, rgba(30, 40, 80, 0.8), rgba(50, 60, 120, 0.8));
@@ -471,7 +477,7 @@
 <body>
 	<!-- Audio Control -->
 	<div class="audio-control">
-		<button class="audio-btn playing" id="audioBtn">🔊 Music ON</button>
+		<button class="audio-btn" id="audioBtn">🔇 Music OFF</button>
 	</div>
 
 	<!-- Audio Element -->
@@ -557,24 +563,16 @@
 
 		let currentFormat = '24'; // 24-hour or 12-hour format
 		let currentFilter = 'all';
-		let isAudioPlaying = true;
+		let isAudioPlaying = false;
 
 		// Audio control
 		const audioBtn = document.getElementById('audioBtn');
 		const backgroundAudio = document.getElementById('backgroundAudio');
 
-		// Auto-play audio on page load
-		window.addEventListener('load', () => {
-			backgroundAudio.volume = 0.3; // Set volume to 30%
-			backgroundAudio.play().catch(err => {
-				console.log('Auto-play prevented. User interaction required.');
-				isAudioPlaying = false;
-				audioBtn.textContent = '🔇 Music OFF';
-				audioBtn.classList.remove('playing');
-			});
-		});
+		// Set volume
+		backgroundAudio.volume = 0.3;
 
-		// Audio button toggle
+		// Audio button toggle with user interaction
 		audioBtn.addEventListener('click', () => {
 			if (isAudioPlaying) {
 				backgroundAudio.pause();
@@ -582,7 +580,9 @@
 				audioBtn.classList.remove('playing');
 				isAudioPlaying = false;
 			} else {
-				backgroundAudio.play();
+				backgroundAudio.play().catch(err => {
+					console.log('Error playing audio:', err);
+				});
 				audioBtn.textContent = '🔊 Music ON';
 				audioBtn.classList.add('playing');
 				isAudioPlaying = true;
